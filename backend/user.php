@@ -40,7 +40,7 @@
                         $created_date_user = date("Y-m-d");
    
                         //* Create user inside database
-                        $create_user_sql = $connect->prepare("INSERT INTO users (id_user, name_user, email_user, password_user, type_user, logo_user, company_name_user, desc_user, created_date_user, status_user) VALUES (NULL , ? , ? , ? , 1 , NULL , NULL , NULL , ? , 1)");
+                        $create_user_sql = $connect->prepare("INSERT INTO users (id_user, name_user, email_user, password_user, type_user, logo_user, company_name_user, desc_user, generated_val_user, created_date_user, status_user) VALUES (NULL , ? , ? , ? , 1 , NULL , NULL , NULL , NULL , ? , 1)");
                         $create_user_sql->execute([
                             $name_user,
                             $email_user,

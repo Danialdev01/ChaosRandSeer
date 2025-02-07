@@ -143,6 +143,8 @@
             exit();
         }
 
+        //TODO change type user
+
         else{
             log_activity_message("../log/admin_activity_log", "Wrong Function");
             alert_message("error", "Wrong Function");

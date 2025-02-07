@@ -14,13 +14,14 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Type</th>
+                            <th>Created Date</th>
                             <th>Graph Bil</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         <?php 
-                            $user_sql = $connect->prepare("SELECT * FROM users WHERE status_user = 1");
+                            $user_sql = $connect->prepare("SELECT * FROM users WHERE status_user = 1 ORDER BY created_date_user DESC");
                             $user_sql->execute();
 
                             while($user = $user_sql->fetch(PDO::FETCH_ASSOC)){
@@ -33,15 +34,27 @@
                                         </a>
                                     </td>
                                     <td><?php echo htmlspecialchars($user['email_user'])?></td>
-                                    <td><?php echo htmlspecialchars($user['type_user'])?></td>
+                                    <td>
+                                        <?php 
+                                            if($user['type_user'] == 1){
+                                                echo "Free";
+                                            }
+                                            elseif($user['type_user'] == 1){
+                                                echo "Paid";
+                                            }
+                                            elseif($user['type_user'] == 1){
+                                                echo "Unlimited";
+                                            }
+                                            else{
+                                                echo "error";
+                                            }
+                                        ?>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($user['created_date_user'])?></td>
 
                                     <td>
                                         <?php
-                                            $bil_graph_sql = $connect->prepare("SELECT * FROM graphs WHERE id_user = ?");
-                                            $bil_graph_sql->execute([$user['id_user']]);
-
-                                            for($x = 0; $bil_graph = $bil_graph_sql->fetch(PDO::FETCH_ASSOC); $x++){}
-                                            echo $x;
+                                            echo htmlspecialchars($user['generated_val_user']);
                                         ?>
                                     </td>
 

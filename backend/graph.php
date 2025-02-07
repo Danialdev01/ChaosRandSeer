@@ -37,6 +37,30 @@
                 isset($_POST['variable_two_name']) && 
                 isset($_POST['variable_two_unit'])
             ){
+
+                //* Get user info
+                $user_value_hash = $_SESSION['user_login_value'];
+                $user_value_txt = openssl_decrypt($user_value_hash, 'AES-256-CBC', $secret_key, 0, 'v_for_encryption');
+                parse_str($user_value_txt, $user_value);
+
+                //* Find user generated val
+                $user_sql = $connect->prepare("SELECT * FROM users WHERE id_user = ?");
+                $user_sql->execute([$user_value['id_user']]);
+                $user = $user_sql->fetch(PDO::FETCH_ASSOC);
+
+                if($user['type_user'] == 1){
+
+                    if($user['generated_val_user'] >= $plan1){
+                        alert_message("error", "Max Upload");
+                        header("location:../user/");
+                    }
+                }
+                elseif($user['type_user'] == 2){
+                    if($user['generated_val_user'] >= $plan2){
+                        alert_message("error", "Max Upload");
+                        header("location:../user/");
+                    }
+                }
     
                 //@ Insert Image
                 //* Make sure the file valid
@@ -81,11 +105,6 @@
                                 exit();
                             }
                             
-                            //* Get user info
-                            $user_value_hash = $_SESSION['user_login_value'];
-                            $user_value_txt = openssl_decrypt($user_value_hash, 'AES-256-CBC', $secret_key, 0, 'v_for_encryption');
-                            parse_str($user_value_txt, $user_value);
-
                             //* Set variables
                             $id_user = $user_value['id_user'];
                             $name_graph = validateInput($_POST['name_graph']);
@@ -108,9 +127,19 @@
                                 $val_two_unit_graph,
                                 $create_date_graph
                             ]);
-            
+                            
                             //* Redirect
                             $id_graph = $connect->lastInsertId();
+
+                            //* Add user generated val
+                            $generated_val = $user['generated_val_user'];
+                            echo $generated_val = $generated_val + 1;
+                            $add_generated_val_user = $connect->prepare("UPDATE users SET generated_val_user = ? WHERE id_user = ?");
+                            $add_generated_val_user->execute([
+                                $generated_val,
+                                $id_user
+                            ]);
+
                             alert_message("success", "Uploaded data");
                             log_activity_message("../log/user_activity_log", "User ($id_user) Created a graph ($id_graph)");
                             header("location:../user/graph.php?id_graph=$id_graph");
@@ -164,16 +193,15 @@
                         $delete_report_sql = $connect->prepare("DELETE FROM reports WHERE id_graph = ?");
                         $delete_report_sql->execute([$id_graph]);
 
-                        //TODO delete picture graph
                         //* Delete picture graph
                         if(!unlink("../uploads/graphs/" . $report['file_prediction_report'])){
                             alert_message("error", "Image Prediction Not Found");
-                            header("location:../user/all-graph.php");
+                            header("Location: " . $_SERVER["HTTP_REFERER"]);
                         }
 
                         if(!unlink("../uploads/graphs/" . $report['file_ts_report'])){
                             alert_message("error", "Image Time Series Not Found");
-                            header("location:../user/all-graph.php");
+                            header("Location: " . $_SERVER["HTTP_REFERER"]);
                         }
 
                     }
@@ -181,12 +209,12 @@
                     //* Delete file data user
                     if(!unlink("../uploads/documents/" . $graph['file_name_graph'])){
                         alert_message("error", "File not Found");
-                        header("location:../user/all-graph.php");
+                        header("Location: " . $_SERVER["HTTP_REFERER"]);
                     }
 
                     alert_message("success", "Deleted Data");
                     log_activity_message("../log/user_activity_log", "User ($id_user) Deleted a graph ($id_graph)");
-                    header("location:../user/all-graph.php");
+                    header("Location: " . $_SERVER["HTTP_REFERER"]);
                 }
                 else{
                     //* Variable not complete

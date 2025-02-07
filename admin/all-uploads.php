@@ -14,6 +14,8 @@
                             <th>Name</th>
                             <th>Created Date</th>
                             <th>User</th>
+                            <th>Storage Usage</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +42,10 @@
                                             $user_graph = $user_graph_sql->fetch(PDO::FETCH_ASSOC);
                                             echo htmlspecialchars($user_graph['name_user']);
                                         ?>
+                                    </td>
+                                    <td>Storage Info</td>
+                                    <td>
+                                        <?php $id_graph = $graph['id_graph']; include('../components/modals/delete-graph.php')?>
                                     </td>
 
                                 </tr>

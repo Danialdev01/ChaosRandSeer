@@ -9,8 +9,5 @@
   "id": "danial",
   "description": "Easy to use web application that uses Chaos Theory and Artificial Intelligence to predict time series data.",
   "lang": "ms",
-  "orientation": "portrait",
-  "categories": [
-    "science"
-  ]
+  "orientation": "portrait"
 }

@@ -13,13 +13,8 @@
                 $user_sql->execute([$id_user]);
                 $user = $user_sql->fetch(PDO::FETCH_ASSOC);
 
-                $graph_user_sql = $connect->prepare("SELECT * FROM graphs WHERE id_user = ?");
-                $graph_user_sql->execute([$id_user]);
-
-                $bil_graph = 0;
-                while($graph = $graph_user_sql->fetch(PDO::FETCH_ASSOC)){
-                    $bil_graph++;
-                }
+                if($user['type_user'] == 1){$max_val = $plan1;}
+                elseif($user['type_user'] == 2){$max_val = $plan2;}
 
                 $report_user_sql = $connect->prepare("SELECT * FROM reports WHERE id_user = ?");
                 $report_user_sql->execute([$id_user]);
@@ -36,9 +31,15 @@
                     $accuracy = ($bil_report % 2) + 93;
                 }
             ?>
+
+
             <section class="bg-white dark:bg-gray-900">
-                <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-  
+                <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-12 lg:px-6">
+                    
+                    <div class="info-plan-user pb-5">
+                        <h1>You are using the <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Free Plan</span></h1>
+                    </div>
+
                     <div class="headaer-statistic">
                         <!-- This is an example component -->
                         <div id="wrapper" class="max-w-xl px-4 py-4 mx-auto">
@@ -47,12 +48,12 @@
                                     <div>
                                         <!-- <div>
                                             <p class="flex items-center justify-end text-green-500 text-md">
-                                                <span class="font-bold">6%</span>
+                                                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Green</span><span class="font-bold">6%</span>
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path class="heroicon-ui" d="M20 15a1 1 0 002 0V7a1 1 0 00-1-1h-8a1 1 0 000 2h5.59L13 13.59l-3.3-3.3a1 1 0 00-1.4 0l-6 6a1 1 0 001.4 1.42L9 12.4l3.3 3.3a1 1 0 001.4 0L20 9.4V15z"/></svg>
                                             </p>
                                         </div> -->
                                         <br>
-                                        <p class="text-3xl font-semibold text-center text-gray-800"><?php echo $bil_graph?></p>
+                                        <p class="text-3xl font-semibold text-center text-gray-800"><?php echo $user['generated_val_user'] ?></p>
                                         <p class="text-lg text-center text-gray-500">Uploads</p>
                                     </div>
                                 </div>
@@ -67,7 +68,7 @@
                                         </div> -->
                                         <br>
                                         <p class="text-3xl font-semibold text-center text-gray-800"><?php echo $bil_report?></p>
-                                        <p class="text-lg text-center text-gray-500">Saved Graphs</p>
+                                        <p class="text-lg text-center text-gray-500">Saved Reports</p>
                                     </div>
                                 </div>
 
@@ -146,7 +147,7 @@
                             </table>
 
                             <?php
-                                if($bil_graph == 0){
+                                if($user['generated_val_user'] == 0){
 
                                     ?>
                                     <p class="py-4 text-gray-400">You have not made any uploads.</p>

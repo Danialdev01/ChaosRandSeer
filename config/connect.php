@@ -9,6 +9,9 @@
     $password = $env['PASSWORD'];
     $dbname = $env['DBNAME'];
     $ai_api_key = $env['AI_API_KEY'];
+    $plan1 = $env['PLAN1'];
+    $plan2 = $env['PLAN2'];
+    $email_password = $env['EMAIL_PASSWORD'];
 
     $secret_key = $env['SECRET_KEY'];
 
